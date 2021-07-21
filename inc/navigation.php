@@ -46,10 +46,23 @@
 										
 										<li><a href="add_newFrame.php">Add New Frame</a></li>
 										<li><a href="view_frame.php">View Frames List</a></li>
+										<li><a href="fcategory.php">Add & View Category</a></li>
 								
 									</ul>
 								</li>
+								<!-- Orders -->
+								<li class="navigation-header"><span>Orders</span> <i class="icon-menu" title="Forms"></i></li>
+								<li>
+									<a href="#"><i class="icon-pencil3"></i> <span>Orders</span></a>
+									<ul>
+						
+										
+										
+										<li><a href="orders_list.php">Order List</a></li>
+		
 								
+									</ul>
+								</li>
 								
 								
 				

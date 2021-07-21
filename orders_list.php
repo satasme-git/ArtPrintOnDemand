@@ -14,10 +14,10 @@ if(!isset($_SESSION['idadmin'])){
 								//Search bar
 								$search=mysqli_real_escape_string($conn,$_GET['search']);
 
-								$query="SELECT * FROM customer WHERE first_name LIKE '%$search%' OR last_name LIKE '%$search%' OR email_address LIKE '%$search%' OR contact_no LIKE '%$search%'";
+								$query="SELECT * FROM orders  WHERE order_id LIKE '%$search%' OR cid LIKE '%$search%' OR total_amount LIKE '%$search%' OR date_time LIKE '%$search%'";
 							}else{
 								//all user
-								$query="SELECT cid,first_name,last_name,email_address,contact_no FROM  customer ORDER BY cid DESC ";
+								$query="SELECT order_id,cid,total_amount,date_time,status,pickup_store FROM orders ORDER BY order_id DESC ";
 							}
 
 							 //$query="SELECT cid,first_name,last_name,email_address,contact_no,addres FROM  customer ";
@@ -26,13 +26,25 @@ if(!isset($_SESSION['idadmin'])){
 								while ($var=mysqli_fetch_assoc($rst)) {
 									$tbl.='<tbody>';
 									$tbl.='<tr>';
-									$tbl.='<td>'.$var['first_name'].'</td>';
-									 $tbl.='<td>'.$var['last_name'].'</td>';
-									 $tbl.='<td>'.$var['email_address'].'</td>';
-									
-									 $tbl.='<td>'.$var['contact_no'].'</td>';
-									$tbl.="<td><a href='delete_customer.php?cid={$var['cid']}' onclick=\"return confirm('Are you sure?');\"><p class=\"text-danger\">Delete</p></a></td>";
-											
+									$tbl.='<td>'.$var['order_id'].'</td>';
+									 $tbl.='<td>'.$var['date_time'].'</td>';
+									 $tbl.='<td>'.$var['cid'].'</td>';
+                                     $tbl.='<td>'.$var['total_amount'].'</td>';
+                                     if($var['status']== 0){
+                                     $tbl.='<td>'.'<p class="text-danger">Not Completed</p>'.'</td>';
+                                     }else{
+                                    $tbl.='<td>'.'<p class="text-success">Completed</p>'.'</td>';   
+                                     }
+                                     if($var['pickup_store']==0){
+                                        $tbl.='<td>'.'<p class="text-primary">Online</p>'.'</td>';
+                                     }else{
+                                        $tbl.='<td>'.'<p class="text-dark">Shop</p>'.'</td>';
+                                     }
+									 if($var['status']== 0){
+									$tbl.="<td><a href='orders_list.php?order_id={$var['order_id']}' onclick=\"return confirm('Are you sure?');\"><button type=\"button\" class=\"btn btn-info\">Active</button></a></td>";
+                                     }else{
+                                    $tbl.="<td><a href='orders_list.php?order_id={$var['order_id']}' onclick=\"return confirm('Are you sure?');\"><button type=\"button\" class=\"btn btn-warning\">Cancle</button></a></td>";
+                                     }		
 											
 											
 								$tbl.='</tr>';
@@ -46,6 +58,26 @@ if(!isset($_SESSION['idadmin'])){
 						
 						
 					?>
+             <?php
+                    if(isset($_GET['order_id'])){
+                        $order_id=mysqli_real_escape_string($conn,$_GET['order_id']);
+                        $action="SELECT * FROM orders WHERE order_id=$order_id";
+                        $action_rst=mysqli_query($conn,$action);
+                                if($action_rst){
+                                       $user=mysqli_fetch_assoc($action_rst);
+                                                if($user['status']== 0){
+                                                    $sql="UPDATE orders SET status=1 WHERE order_id=$order_id";
+                                                }else{
+                                                    $sql="UPDATE orders SET status=0 WHERE order_id=$order_id";
+                                                }
+                                                $rst=mysqli_query($conn,$sql);
+                                                if($rst){
+                                                    header('Location:orders_list.php?msg=action');
+                                                }   
+                                }
+
+                    }
+                ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -397,7 +429,7 @@ if(!isset($_SESSION['idadmin'])){
 					<!-- Basic datatable -->
 					<div class="panel panel-flat">
 						<div class="panel-heading">
-							<h5 class="panel-title">Customers</h5>
+							<h5 class="panel-title">Orders</h5>
 							<div class="heading-elements">
 								<ul class="icons-list">
 			                		
@@ -407,7 +439,7 @@ if(!isset($_SESSION['idadmin'])){
 		                	</div>
 						</div>
 						<div class="search">
-                <form action="view_customer.php" method="get">
+                <form action="orders_list.php" method="get">
                     <p>
 					<input class="form-control" id="" value="<?php echo $search?>" name="search" type="text" placeholder="Type to Search" autofocus>
                     </p>
@@ -416,11 +448,12 @@ if(!isset($_SESSION['idadmin'])){
 			<table class="table datatable-basic">
 			<thead>
 								<tr>
-									<th>First Name</th>
-									<th>Last Name</th>
-									<th>Email</th>
-                                   
-									<th>Contact Number</th>
+									<th>Order Id</th>
+                                    <th>Order Date</th>
+									<th>Customer Id</th>
+									<th>Total amount </th>
+                                    <th> Status</th>
+                                    <th>Pickup Store </th>
                                     <th>Action</th>
 									
 								</tr>

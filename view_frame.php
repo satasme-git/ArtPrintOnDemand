@@ -369,7 +369,7 @@ if(!isset($_SESSION['idadmin'])){
 
 					<?php
 
-							$query="SELECT id,name,price,code,ft,cat,pic,thumb,create_date,update_date,frame_size  FROM  frame ";
+							$query="SELECT id,name,price,code,ft,cat,pic,thumb,create_date,update_date,frame_size  FROM  frame ORDER BY id DESC";
 							$rst=mysqli_query($conn,$query);
 							if($rst){
 								//echo "Ok";
