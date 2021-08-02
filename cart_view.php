@@ -11,7 +11,7 @@ if(!isset($_SESSION['idadmin'])){
 <?php
 $tbl='';
 
-$query="SELECT id,name,pic FROM fcategory  ORDER BY id DESC ";
+$query="SELECT * FROM shop ORDER BY id";
 $rst=mysqli_query($conn,$query);
 							if($rst){
 								while ($var=mysqli_fetch_assoc($rst)) {
@@ -20,9 +20,16 @@ $rst=mysqli_query($conn,$query);
 									$tbl.='<td>'.$var['id'].'</td>';
 									 $tbl.='<td>'.$var['name'].'</td>';
 									 $tbl.='<td>'.$var['pic'].'</td>';
+                                     $tbl.='<td>'.$var['description'].'</td>';
+                                     $tbl.='<td>'.$var['price'].'</td>';
+                                     $tbl.='<td>'.$var['sale_price'].'</td>';
+                                     $tbl.='<td>'.$var['sale_price'].'</td>';
+                                     $tbl.='<td>'.$var['sale_price'].'</td>';
 									
 						
-									$tbl.="<td><a href='#?id={$var['id']}' onclick=\"return confirm('Are you sure?');\"><p class=\"text-danger\">Delete</p></a></td>";
+									$tbl.="<td><a href='category_main_edit.php?id={$var['id']}' onclick=\"return confirm('Are you sure?');\"><p class=\"btn btn-info\">Edit</p></a>
+                                    <a href='category_delete.php?id={$var['id']}' onclick=\"return confirm('Are you sure?');\"><p class=\"btn btn-warning\">Delete</p></a>
+                                    <a href='category_main_add.php?id={$var['id']}&name={$var['name']}' onclick=\"return confirm('Are you sure?');\"><p class=\"btn btn-success\">Add</p></a></td>";
 											
 											
 											
@@ -35,7 +42,7 @@ $rst=mysqli_query($conn,$query);
 
 	if(isset($_POST['submit'])){
 		$errors = array();
-		$path='uploads/category/';
+		$path='uploads/image/';
 		
 					//checking max length
 			$max_length=array('name'=>150);
@@ -44,15 +51,16 @@ $rst=mysqli_query($conn,$query);
 			//Add to database
 			if(empty($errors)) {
 				$name = mysqli_real_escape_string($conn, $_POST['name']);
+                $dis = mysqli_real_escape_string($conn, $_POST['dis']);
 				$img=$_FILES['img']['name'];
 				$time=date("Y-m-d h:i:a");
-						$sql="INSERT INTO  fcategory (`name`,`pic`)
-						 VALUES('{$name}','{$img}')";
+						$sql="INSERT INTO category (`name`,`pic`,`mainid`,`dis`)
+						 VALUES('{$name}','{$img}',0,'{$dis}')";
 				$result = mysqli_query($conn,$sql);
 				if($result){
 					move_uploaded_file($_FILES['img']['tmp_name'],$path.$img);
 		
-					header('location:fcategory.php?msg=successfuly');
+					header('location:category.php?msg=successfuly');
 				}
 				
 
@@ -385,7 +393,7 @@ $rst=mysqli_query($conn,$query);
 					<!-- Form validation -->
 					<div class="panel panel-flat">
 						<div class="panel-heading">
-							<h5 class="panel-title"><b>Add New  Frame Category</b>
+							<h5 class="panel-title"><b>Add New Image Category</b>
 </h5>
 							<div class="heading-elements">
 								<ul class="icons-list">
@@ -398,7 +406,7 @@ $rst=mysqli_query($conn,$query);
 
 						<div class="panel-body">
 							
-							<form class="form-horizontal form-validate-jquery" action="fcategory.php" method="POST" enctype="multipart/form-data">
+							<form class="form-horizontal form-validate-jquery" action="cart_view.php" method="POST" enctype="multipart/form-data">
 								<fieldset class="content-group">
 									
 											
@@ -414,12 +422,19 @@ $rst=mysqli_query($conn,$query);
 									
 									<!-- Styled file uploader -->
 									<div class="form-group">
-										<label class="control-label col-lg-3"><b>Thumbnail</b></label>
+										<label class="control-label col-lg-3"><b>Picture</b></label>
 										<div class="col-lg-9">
-											<input type="file" name="img" class="file-styled"  accept=".jpg, .jpeg, .png" multiple>
+											<input type="file" name="img" class="file-styled" required="required" accept=".jpg, .jpeg, .png" multiple>
 										</div>
 									</div>
-									
+									<!-- Basic text input -->
+									<div class="form-group">
+										<label class="control-label col-lg-3"><b>Discription</b></label>
+										<div class="col-lg-9">
+											<input type="text" name="dis" class="form-control"  placeholder="input here">
+										</div>
+									</div>
+									<!-- /basic text input -->
 											
 									</fieldset>
 
@@ -433,7 +448,7 @@ $rst=mysqli_query($conn,$query);
 						</div>
                         
                         <div class="panel-heading">
-                        <h5 class="panel-title"><b> Frame Category List</b>
+                        <h5 class="panel-title"><b> Image Category List</b>
 </h5>
                         </div>
                         <table class="table">
@@ -441,7 +456,8 @@ $rst=mysqli_query($conn,$query);
 								<tr>
 									<th scope="col"><b>Id</b></th>
 									<th scope="col"><b>Category Name</b></th>
-									<th scope="col"><b>Thumbnail</b></th>
+									<th scope="col"><b>Image</b></th>
+                                    <th scope="col"><b>Discription</b></th>
                                     <th scope="col"><b>Action</b></th>
 									
 								</tr>

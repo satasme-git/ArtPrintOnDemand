@@ -9,33 +9,39 @@ if(!isset($_SESSION['idadmin'])){
 
 ?>
 <?php
-$tbl='';
+    $image="";
+	$name = "";
+    $dis = "";
+    
+   
+//getting the user infromation
+if(isset($_GET['id'])){
+    $frameid=mysqli_real_escape_string($conn,$_GET['id']);
+    $edite_sql="SELECT * FROM category  WHERE id='{$frameid}' LIMIT 1";
+    $edite_query=mysqli_query($conn,$edite_sql);
+            if($edite_query){
+                if(mysqli_num_rows($edite_query)==1){
+                    //user found
+                    $frame=mysqli_fetch_assoc($edite_query);
+                    $name =$frame['name'];
+                    $dis = $frame['dis'];
+					$pic=$frame['pic'];
+					
 
-$query="SELECT id,name,pic FROM fcategory  ORDER BY id DESC ";
-$rst=mysqli_query($conn,$query);
-							if($rst){
-								while ($var=mysqli_fetch_assoc($rst)) {
-									$tbl.='<tbody>';
-									$tbl.='<tr>';
-									$tbl.='<td>'.$var['id'].'</td>';
-									 $tbl.='<td>'.$var['name'].'</td>';
-									 $tbl.='<td>'.$var['pic'].'</td>';
-									
-						
-									$tbl.="<td><a href='#?id={$var['id']}' onclick=\"return confirm('Are you sure?');\"><p class=\"text-danger\">Delete</p></a></td>";
-											
-											
-											
-								$tbl.='</tr>';
-								$tbl.='</tbody>';
-								}
-							}else{
-								echo "Faild";
-							}
+
+                }else{
+                    //user not found
+                    header('Location:category_main_edit.php?err=user_not_found');
+                }
+            }else{
+                //query unsuccessful
+               header('Location:category_main_edit.php?err=query_failed');
+            }
+}
 
 	if(isset($_POST['submit'])){
 		$errors = array();
-		$path='uploads/category/';
+		$path='uploads/image/subimage/';
 		
 					//checking max length
 			$max_length=array('name'=>150);
@@ -43,17 +49,22 @@ $rst=mysqli_query($conn,$query);
 
 			//Add to database
 			if(empty($errors)) {
+                $id = mysqli_real_escape_string($conn, $_POST['id']);
 				$name = mysqli_real_escape_string($conn, $_POST['name']);
-				$img=$_FILES['img']['name'];
-				$time=date("Y-m-d h:i:a");
-						$sql="INSERT INTO  fcategory (`name`,`pic`)
-						 VALUES('{$name}','{$img}')";
-				$result = mysqli_query($conn,$sql);
-				if($result){
-					move_uploaded_file($_FILES['img']['tmp_name'],$path.$img);
-		
-					header('location:fcategory.php?msg=successfuly');
+				$dis = mysqli_real_escape_string($conn, $_POST['dis']);
+				$pic=$_FILES['pic']['name'];
+				if(empty($pic)){
+                $addsql="UPDATE category SET name='{$name}',dis='{$dis}' WHERE id='{$id}' LIMIT 1";
+				}else{
+					$addsql="UPDATE category SET name='{$name}',pic='{$pic}',dis='{$dis}' WHERE id='{$id}' LIMIT 1";
 				}
+				$result_update = mysqli_query($conn,$addsql);
+				if($result_update){
+					move_uploaded_file($_FILES['pic']['tmp_name'],$path.$pic);
+					header('location:category_main_add.php?update=successfuly');
+				}else{
+                    header('Location:category_main_edit.php?err=query_failed');
+                }
 				
 
 
@@ -385,7 +396,7 @@ $rst=mysqli_query($conn,$query);
 					<!-- Form validation -->
 					<div class="panel panel-flat">
 						<div class="panel-heading">
-							<h5 class="panel-title"><b>Add New  Frame Category</b>
+							<h5 class="panel-title"><legend class="text-bold">Update Category</legend>
 </h5>
 							<div class="heading-elements">
 								<ul class="icons-list">
@@ -398,59 +409,63 @@ $rst=mysqli_query($conn,$query);
 
 						<div class="panel-body">
 							
-							<form class="form-horizontal form-validate-jquery" action="fcategory.php" method="POST" enctype="multipart/form-data">
+							<form class="form-horizontal form-validate-jquery" action="category_main_edit.php" method="POST" enctype="multipart/form-data">
 								<fieldset class="content-group">
 									
-											
+                                <input type="hidden" name="id" value="<?php echo $frameid?>">
 									<!-- Basic text input -->
 									<div class="form-group">
 										<label class="control-label col-lg-3"><b>Category Name</b></label>
 										<div class="col-lg-9">
-											<input type="text" name="name" class="form-control" required="required" placeholder="input Name">
+											<input type="text" name="name" class="form-control" required="required" <?php echo 'value="'.$name.'"'; ?>>
 										</div>
 									</div>
 									<!-- /basic text input -->
 
 									
+									
 									<!-- Styled file uploader -->
 									<div class="form-group">
-										<label class="control-label col-lg-3"><b>Thumbnail</b></label>
+										<label class="control-label col-lg-3"><b>Picture</b></label>
 										<div class="col-lg-9">
-											<input type="file" name="img" class="file-styled"  accept=".jpg, .jpeg, .png" multiple>
+											<input type="file" name="pic" class="file-styled"  accept=".jpg, .jpeg, .png" multiple>
+											<b class="text-primary"><?php echo $frame['pic']; ?></b>
 										</div>
 									</div>
+									<!-- Basic text input -->
+									<div class="form-group">
+										<label class="control-label col-lg-3"><b>Discription</b></label>
+										<div class="col-lg-9">
+											<input type="text" name="dis" class="form-control"  <?php echo 'value="'.$dis.'"'; ?>>
+										</div>
+									</div>
+									<!-- /basic text input -->
 									
+									
+						
 											
 									</fieldset>
 
 							
 
 								<div class="text-right">
-									<button type="reset" class="btn btn-default" id="reset">Reset <i class="icon-reload-alt position-right"></i></button>
-									<button type="submit" name="submit" class="btn btn-primary">Add + <i class="icon-arrow-right14 position-right"></i></button>
+									
+									<button type="submit" name="submit" class="btn btn-primary">Update <i class="icon-arrow-right14 position-right"></i></button>
 								</div>
 							</form>
+
+                            <?php
+                                    
+                               
+								$image.="<p><b>Picture</b></p><img src='uploads/image/subimage/{$frame['pic']}' 1- style='width:20%; height:20%;'>&nbsp</div>";
+                                echo $image;
+                
+                
+                            
+                            ?>
+							
+							
 						</div>
-                        
-                        <div class="panel-heading">
-                        <h5 class="panel-title"><b> Frame Category List</b>
-</h5>
-                        </div>
-                        <table class="table">
-			<thead class="thead-dark">
-								<tr>
-									<th scope="col"><b>Id</b></th>
-									<th scope="col"><b>Category Name</b></th>
-									<th scope="col"><b>Thumbnail</b></th>
-                                    <th scope="col"><b>Action</b></th>
-									
-								</tr>
-			</thead>
-					<?php
-					 echo $tbl;
-					?>
-			</table>
-						
 					</div>
 					<!-- /form validation -->
 

@@ -57,7 +57,7 @@ if(isset($_GET['frameid'])){
 
 	if(isset($_POST['submit'])){
 		$errors = array();
-		$path='uploads/';
+		$path='uploads/category/';
 		
 					//checking max length
 			$max_length=array('name'=>150,'price'=>15,'cat'=>10,'code'=>100,'ft'=>70,'size'=>11);
@@ -526,8 +526,8 @@ if(isset($_GET['frameid'])){
 
                             <?php
                                     
-                                $image.="<div><p><b>Template </b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<b>Thumbnail</b></p><img src='uploads/{$frame['pic']}' 1- style='width:20%; height:20%;'>&nbsp &nbsp &nbsp &nbsp";
-								$image.="<img src='uploads/{$frame['thumb']}' 1- style='width:20%; height:20%;'>&nbsp</div>";
+                                $image.="<div><p><b>Template </b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<b>Thumbnail</b></p><img src='uploads/category/{$frame['pic']}' 1- style='width:20%; height:20%;'>&nbsp &nbsp &nbsp &nbsp";
+								$image.="<img src='uploads/category/{$frame['thumb']}' 1- style='width:20%; height:20%;'>&nbsp</div>";
                                 echo $image;
                 
                 

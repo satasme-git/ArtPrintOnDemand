@@ -53,7 +53,7 @@
 								<!-- Orders -->
 								<li class="navigation-header"><span>Orders</span> <i class="icon-menu" title="Forms"></i></li>
 								<li>
-									<a href="#"><i class="icon-pencil3"></i> <span>Orders</span></a>
+									<a href="#"><i class="icon-pencil3"></i> <span>Orders components</span></a>
 									<ul>
 						
 										
@@ -63,8 +63,21 @@
 								
 									</ul>
 								</li>
-								
-								
+								<!-- images -->
+								<li class="navigation-header"><span>Images</span> <i class="icon-menu" title="Forms"></i></li>
+								<li>
+									<a href="#"><i class="icon-pencil3"></i> <span>Image components</span></a>
+									<ul>
+										<li><a href="category.php">Add & View Category</a></li>
+									</ul>
+								</li>
+								<li class="navigation-header"><span>Cart</span> <i class="icon-menu" title="Forms"></i></li>
+								<li>
+									<a href="#"><i class="icon-pencil3"></i> <span>Cart components</span></a>
+									<ul>
+										<li><a href="cart_view.php">All Shop Carts</a></li>
+									</ul>
+								</li>
 				
 								<!-- /forms -->
 								

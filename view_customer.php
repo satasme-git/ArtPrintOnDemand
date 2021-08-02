@@ -31,7 +31,7 @@ if(!isset($_SESSION['idadmin'])){
 									 $tbl.='<td>'.$var['email_address'].'</td>';
 									
 									 $tbl.='<td>'.$var['contact_no'].'</td>';
-									$tbl.="<td><a href='delete_customer.php?cid={$var['cid']}' onclick=\"return confirm('Are you sure?');\"><p class=\"text-danger\">Delete</p></a></td>";
+									$tbl.="<td><a href='delete_customer.php?cid={$var['cid']}' onclick=\"return confirm('Are you sure?');\"><p class=\"text-danger\">Delete</p></a><a href='orderlist_user.php?cid={$var['cid']}'><i class=\"icon-file-text\"></i></a></td>";
 											
 											
 											
